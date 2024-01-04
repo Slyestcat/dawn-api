@@ -8,6 +8,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from claimDonation import retrieve_donation_data_for_user
+from claimVote import count_unclaimed_votes
 from getSpent import fetch_and_calculate_paid
 
 from updateWorld import update_world_info
@@ -260,3 +261,13 @@ def get_player_spent(player_name: str):
 def read_donation_data(username: str):
     donation_data = retrieve_donation_data_for_user(username)
     return donation_data
+
+@app.get("/account/vote/{username}")
+def read_vote_data(username: str):
+    # Call the count_unclaimed_users function with the specified username
+    count = count_unclaimed_votes(username)
+
+    if count is not None:
+        return count
+    else:
+        return 0
